@@ -1,20 +1,27 @@
 from heapq import heappush, heappop
 from collections import deque
+from itertools import count
 
 
-class PriorityQueue:
+class IterableMixin:
+    def __len__(self):
+        return len(self._elements)
+    
+    def __iter__(self):
+        while len(self) > 0:
+            yield self.dequeue()
+
+class PriorityQueue(IterableMixin):
     def __init__(self) -> None:
         self._elements = []
+        self._counter = count()
 
     def enqueue_with_priority(self, priority, value):
-        heappush(self._elements,(-priority,value))#like tuple comparison
+        element = (-priority,next(self._counter),value)
+        heappush(self._elements,element)#like tuple comparison
     
     def dequeue(self):
-        return heappop(self._elements)[1]
-
-
-
-
+        return heappop(self._elements)[-1]
 
 
 
